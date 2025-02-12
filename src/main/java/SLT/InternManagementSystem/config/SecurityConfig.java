@@ -14,6 +14,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @Configuration
 @EnableWebSecurity
@@ -28,14 +31,15 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        return http.csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(
-                      req -> req.requestMatchers("/login/**", "/signup", "/storeOTP", "/verifyOTP").permitAll()
-                              .requestMatchers("/admin/**").hasAuthority("Admin")
-                              .requestMatchers("/intern/**").hasAuthority("Intern")
-                              .requestMatchers("/supervisor/**").hasAuthority("Supervisor")
-                              .anyRequest().authenticated()
-                ).userDetailsService(userDetailsService)
+        return http
+                .csrf(AbstractHttpConfigurer::disable)
+//                .authorizeHttpRequests(
+//                      req -> req.requestMatchers("/login/**", "/signup", "/storeOTP", "/verifyOTP", "/admin/**", "/intern/**").permitAll()
+//                              .requestMatchers("/admin/**").hasAuthority("Admin")
+//                              .requestMatchers("/intern/**").hasAuthority("Intern")
+//                              .requestMatchers("/supervisor/**").hasAuthority("Supervisor")
+//                              .anyRequest().authenticated()
+//                ).userDetailsService(userDetailsService)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
@@ -51,4 +55,19 @@ public class SecurityConfig {
     public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
         return configuration.getAuthenticationManager();
     }
+
+
+//    @Bean
+//    public CorsConfigurationSource corsConfigurationSource() {
+//        CorsConfiguration configuration = new CorsConfiguration();
+//        configuration.addAllowedOrigin("*"); // Allow all origins or set specific ones
+//        configuration.addAllowedMethod("*"); // Allow all HTTP methods (GET, POST, etc.)
+//        configuration.addAllowedHeader("*"); // Allow all headers
+//
+//        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+//        source.registerCorsConfiguration("/**", configuration); // Apply to all endpoints
+//
+//        return source;
+//    }
+
 }
