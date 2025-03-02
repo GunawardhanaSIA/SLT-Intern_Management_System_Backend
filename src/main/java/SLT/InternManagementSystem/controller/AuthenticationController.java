@@ -1,16 +1,17 @@
 package SLT.InternManagementSystem.controller;
 
+import SLT.InternManagementSystem.dto.ApplicantDto;
 import SLT.InternManagementSystem.dto.OtpDto;
+import SLT.InternManagementSystem.dto.UserDto;
 import SLT.InternManagementSystem.entity.AuthenticationResponse;
 import SLT.InternManagementSystem.entity.User;
 import SLT.InternManagementSystem.service.AuthenticationService;
 import SLT.InternManagementSystem.service.OtpService;
+import SLT.InternManagementSystem.service.UserService;
+import SLT.InternManagementSystem.service.impl.UserDetailsServiceImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
@@ -19,11 +20,15 @@ import java.util.Map;
 public class AuthenticationController {
     private final AuthenticationService authService;
     private final OtpService otpService;
+    private final UserDetailsServiceImpl userDetailsServiceImpl;
+    private final UserService userService;
 
-    public AuthenticationController(AuthenticationService authService, OtpService otpService) {
+    public AuthenticationController(AuthenticationService authService, OtpService otpService, UserDetailsServiceImpl userDetailsServiceImpl, UserService userService) {
 
         this.authService = authService;
         this.otpService = otpService;
+        this.userDetailsServiceImpl = userDetailsServiceImpl;
+        this.userService = userService;
     }
 
     @PostMapping("/signup")
@@ -55,5 +60,27 @@ public class AuthenticationController {
         } else {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid OTP");
         }
+    }
+
+    @PostMapping("/verifyEmail")
+    public ResponseEntity<String> verifyEmail(@RequestBody Map<String, String> request) {
+        String username = request.get("username");
+        System.out.println("Inside verifyEmail" + username);
+        boolean isValidEmail = userService.validateEmail(username);
+
+        if (isValidEmail) {
+            return ResponseEntity.ok("User verified");
+        } else {
+            System.out.println("User not found");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid User");
+        }
+    }
+
+    @PutMapping("/resetPassword")
+    public ResponseEntity<?> resetPassword(@RequestBody Map<String, String> request) {
+        String username = request.get("username");
+        String password = request.get("password");
+        UserDto updatedUser= userService.resetPassword(username, password);
+        return ResponseEntity.ok(updatedUser);
     }
 }
