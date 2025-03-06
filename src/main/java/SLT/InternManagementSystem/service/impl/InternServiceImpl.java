@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -56,5 +57,14 @@ public class InternServiceImpl implements InternService {
     public List<InternDto> getAllInterns() {
         List<Intern> interns = internRepository.findAll();
         return interns.stream().map((intern) -> InternMapper.mapToInternDto(intern)).collect(Collectors.toList());
+    }
+
+    @Override
+    public InternDto getIntern(String email) {
+        Intern intern = internRepository.findInternByEmail(email);
+        if (intern != null) {
+            return InternMapper.mapToInternDto(intern);
+        }
+        return null;
     }
 }
