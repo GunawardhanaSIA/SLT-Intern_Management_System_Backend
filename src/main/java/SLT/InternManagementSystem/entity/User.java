@@ -24,8 +24,12 @@ public class User implements UserDetails {
     private int id;
     private String username;
     private String password;
+
     @Enumerated(EnumType.STRING)
     private Role role;
+
+    @Column(columnDefinition = "INT DEFAULT 0")
+    private int state;
 
 
     @Override
@@ -49,6 +53,8 @@ public class User implements UserDetails {
         return role;
     }
 
+    public int getState() { return state; }
+
     public void setId(int id) {
         this.id = id;
     }
@@ -64,6 +70,18 @@ public class User implements UserDetails {
     public void setRole(Role role) {
         this.role = role;
     }
+
+    public void setState(int state) { this.state = state; }
+
+    public User(int id, String username, String password, Role role, int state) {
+        this.id = id;
+        this.username = username;
+        this.password = password;
+        this.role = role;
+        this.state = state;
+    }
+
+    public User() {}
 
     @Override
     public boolean isAccountNonExpired() {
