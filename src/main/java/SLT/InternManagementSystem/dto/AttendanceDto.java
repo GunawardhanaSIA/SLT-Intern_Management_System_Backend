@@ -9,8 +9,6 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@AllArgsConstructor
-@NoArgsConstructor
 public class AttendanceDto {
     private int attendanceId;
     private Intern intern;

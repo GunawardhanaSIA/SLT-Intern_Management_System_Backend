@@ -12,8 +12,6 @@ import java.time.LocalTime;
 
 @Getter
 @Setter
-@AllArgsConstructor
-@NoArgsConstructor
 public class ApplicantDto {
     private int applicantId;
     private User user;

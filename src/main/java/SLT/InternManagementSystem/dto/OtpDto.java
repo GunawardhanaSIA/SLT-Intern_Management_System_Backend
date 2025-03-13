@@ -10,8 +10,6 @@ import java.time.LocalDateTime;
 
 @Getter
 @Setter
-@AllArgsConstructor
-@NoArgsConstructor
 public class OtpDto {
     private int id;
     private String email;

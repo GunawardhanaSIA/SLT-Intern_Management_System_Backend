@@ -10,8 +10,6 @@ import java.time.LocalDateTime;
 
 @Getter
 @Setter
-@AllArgsConstructor
-@NoArgsConstructor
 public class VerificationTokenDto {
     private Long id;
     private String token;
