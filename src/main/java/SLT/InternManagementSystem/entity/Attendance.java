@@ -8,8 +8,6 @@ import lombok.NoArgsConstructor;
 
 @Data
 @Builder
-@AllArgsConstructor
-@NoArgsConstructor
 @Entity
 @Table(name = "attendance", uniqueConstraints = @UniqueConstraint(columnNames = {"intern_id", "project_id", "date"}))
 public class Attendance {

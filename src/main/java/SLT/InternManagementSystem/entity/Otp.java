@@ -8,8 +8,6 @@ import java.time.LocalDateTime;
 
 @Data
 @Builder
-@AllArgsConstructor
-@NoArgsConstructor
 @Entity
 @Table(name = "otp")
 public class Otp {

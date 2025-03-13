@@ -9,8 +9,6 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@AllArgsConstructor
-@NoArgsConstructor
 public class SupervisorDto {
     private int supervisorId;
     private User user;

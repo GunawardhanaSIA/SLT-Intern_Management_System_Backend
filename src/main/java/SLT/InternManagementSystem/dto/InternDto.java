@@ -8,8 +8,6 @@ import lombok.*;
 
 @Getter
 @Setter
-@AllArgsConstructor
-@NoArgsConstructor
 public class InternDto {
     private int internId;
     private User user;
