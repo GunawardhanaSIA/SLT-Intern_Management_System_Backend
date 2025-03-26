@@ -8,7 +8,7 @@ public class AttendanceMapper {
         return new AttendanceDto(
                 attendance.getAttendanceId(),
                 attendance.getIntern(),
-                attendance.getProject(),
+//                attendance.getProject(),
                 attendance.getDate(),
                 attendance.getStatus()
         );
@@ -18,7 +18,7 @@ public class AttendanceMapper {
         return new Attendance(
                 attendanceDto.getAttendanceId(),
                 attendanceDto.getIntern(),
-                attendanceDto.getProject(),
+//                attendanceDto.getProject(),
                 attendanceDto.getDate(),
                 attendanceDto.getStatus()
         );

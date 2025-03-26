@@ -12,32 +12,32 @@ import lombok.Setter;
 public class AttendanceDto {
     private int attendanceId;
     private Intern intern;
-    private Project project;
+//    private Project project;
     private String date;
-    private Boolean status;
+    private int status;
 
 
     public int getAttendanceId() {return attendanceId;}
     public Intern getIntern() {return intern;}
-    public Project getProject() {return project;}
+//    public Project getProject() {return project;}
     public String getDate() {return date;}
-    public Boolean getStatus() {return status;}
+    public int getStatus() {return status;}
 
 
     public void setAttendanceId(int attendanceId) { this.attendanceId = attendanceId; }
     public void setIntern(Intern intern) { this.intern = intern; }
-    public void setProject(Project project) { this.project = project; }
+//    public void setProject(Project project) { this.project = project; }
     public void setDate(String date) { this.date = date; }
-    public void setStatus(Boolean status) { this.status = status; }
+    public void setStatus(int status) { this.status = status; }
 
 
     public AttendanceDto() {}
 
 
-    public AttendanceDto(int attendanceId, Intern intern, Project project, String date, Boolean status) {
+    public AttendanceDto(int attendanceId, Intern intern, String date, int status) {
         this.attendanceId = attendanceId;
         this.intern = intern;
-        this.project = project;
+//        this.project = project;
         this.date = date;
         this.status = status;
     }

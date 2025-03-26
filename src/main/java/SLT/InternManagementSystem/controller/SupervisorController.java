@@ -1,9 +1,6 @@
 package SLT.InternManagementSystem.controller;
 
-import SLT.InternManagementSystem.dto.ApplicantDto;
-import SLT.InternManagementSystem.dto.AttendanceDto;
-import SLT.InternManagementSystem.dto.InternDto;
-import SLT.InternManagementSystem.dto.ProjectDto;
+import SLT.InternManagementSystem.dto.*;
 import SLT.InternManagementSystem.entity.Attendance;
 import SLT.InternManagementSystem.service.AttendanceService;
 import SLT.InternManagementSystem.service.InternService;
@@ -53,14 +50,22 @@ public class SupervisorController {
     }
 
     @PostMapping("/attendance")
-    public ResponseEntity<?> markAttendance(@RequestParam int internId, @RequestParam int projectId, @RequestParam String date, @RequestParam Boolean status) {
-        attendanceService.saveAttendance(internId, projectId, date, status);
+    public ResponseEntity<?> markAttendance(@RequestParam int internId, @RequestParam String date) {
+        System.out.println("internid of attendance marking"+ internId);
+        System.out.println(date);
+        attendanceService.saveAttendance(internId, date);
         return ResponseEntity.ok("Attendance saved successfully!");
     }
 
-    @GetMapping("/attendance/{projectId}")
-    public ResponseEntity<List<AttendanceDto>> getAttendanceByProject(@PathVariable int projectId) {
-        List<AttendanceDto> attendanceRecords = attendanceService.getAttendanceByProjectId(projectId);
-        return ResponseEntity.ok(attendanceRecords);
+    @GetMapping("/attendance/{internId}")
+    public ResponseEntity<List<AttendanceDto>> getInternAttendance(@PathVariable int internId) {
+        List<AttendanceDto> attendance = attendanceService.getInternAttendance(internId);
+        return ResponseEntity.ok(attendance);
     }
+
+//    @GetMapping("/attendance/{projectId}")
+//    public ResponseEntity<List<AttendanceDto>> getAttendanceByProject(@PathVariable int projectId) {
+//        List<AttendanceDto> attendanceRecords = attendanceService.getAttendanceByProjectId(projectId);
+//        return ResponseEntity.ok(attendanceRecords);
+//    }
 }

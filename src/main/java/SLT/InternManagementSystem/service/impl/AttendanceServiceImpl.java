@@ -4,6 +4,7 @@ import SLT.InternManagementSystem.dto.AttendanceDto;
 import SLT.InternManagementSystem.entity.*;
 import SLT.InternManagementSystem.mapper.AttendanceMapper;
 import SLT.InternManagementSystem.mapper.InternMapper;
+import SLT.InternManagementSystem.mapper.ProjectMapper;
 import SLT.InternManagementSystem.repository.AttendanceRepository;
 import SLT.InternManagementSystem.repository.InternRepository;
 import SLT.InternManagementSystem.repository.ProjectRepository;
@@ -26,20 +27,29 @@ public class AttendanceServiceImpl implements AttendanceService {
     }
 
     @Override
-    public AttendanceDto saveAttendance(int internId, int projectId, String date, Boolean status) {
+    public AttendanceDto saveAttendance(int internId, String date) {
         Intern intern = internRepository.findByInternId(internId)
                     .orElseThrow(() -> new RuntimeException("Intern not found"));
-        Project project = projectRepository.findByProjectId(projectId)
-                .orElseThrow(() -> new RuntimeException("Project not found"));
+//        Project project = projectRepository.findByProjectId(projectId)
+//                .orElseThrow(() -> new RuntimeException("Project not found"));
 
         Attendance attendance = new Attendance();
         attendance.setIntern(intern);
-        attendance.setProject(project);
+//        attendance.setProject(project);
         attendance.setDate(date);
-        attendance.setStatus(status);
+        attendance.setStatus(1);
 
         Attendance savedAttendance = attendanceRepository.save(attendance);
         return AttendanceMapper.mapToAttendanceDto(savedAttendance);
+    }
+
+    @Override
+    public List<AttendanceDto> getInternAttendance(int internId) {
+        Intern intern = internRepository.findByInternId(internId)
+                .orElseThrow(() -> new RuntimeException("Intern not found"));
+
+        List<Attendance> attendances = attendanceRepository.findByIntern(intern);
+        return attendances.stream().map((attendance) -> AttendanceMapper.mapToAttendanceDto(attendance)).collect(Collectors.toList());
     }
 
 //    @Override
@@ -54,12 +64,12 @@ public class AttendanceServiceImpl implements AttendanceService {
 //        }).collect(Collectors.toList());  // ✅ Returning the list
 //    }
 
-    @Override
-    public List<AttendanceDto> getAttendanceByProjectId(int projectId) {
-        Project project = projectRepository.findByProjectId(projectId)
-                .orElseThrow(() -> new RuntimeException("Project not found"));
-        List<Attendance> projectAttendanceRecords = attendanceRepository.findByProject(project);
-        return projectAttendanceRecords.stream().map((projectAttendanceRecord) -> AttendanceMapper.mapToAttendanceDto(projectAttendanceRecord)).collect(Collectors.toList());
-
-    }
+//    @Override
+//    public List<AttendanceDto> getAttendanceByProjectId(int projectId) {
+//        Project project = projectRepository.findByProjectId(projectId)
+//                .orElseThrow(() -> new RuntimeException("Project not found"));
+//        List<Attendance> projectAttendanceRecords = attendanceRepository.findByProject(project);
+//        return projectAttendanceRecords.stream().map((projectAttendanceRecord) -> AttendanceMapper.mapToAttendanceDto(projectAttendanceRecord)).collect(Collectors.toList());
+//
+//    }
 }
