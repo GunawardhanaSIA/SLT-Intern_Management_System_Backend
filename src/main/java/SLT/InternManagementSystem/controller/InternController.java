@@ -32,16 +32,16 @@ public class InternController {
         return new ResponseEntity<>(savedApplicant, HttpStatus.CREATED);
     }
 
-    @GetMapping("/getIntern/{email}")
-    public ResponseEntity<?> getIntern(@PathVariable String email) {
-        InternDto intern = internService.getIntern(email);
+    @GetMapping("/getIntern/{userId}")
+    public ResponseEntity<?> getIntern(@PathVariable int userId) {
+        InternDto intern = internService.getIntern(userId);
 
         if (intern != null) {
             return ResponseEntity.ok(intern);
         } else {
             System.out.println("Intern not found");
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("Intern with email " + email + " not found.");
+                    .body("Intern with email " + userId + " not found.");
         }
     }
 }

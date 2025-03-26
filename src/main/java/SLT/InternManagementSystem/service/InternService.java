@@ -12,5 +12,5 @@ public interface InternService {
 
     List<InternDto> getAllInterns();
 
-    InternDto getIntern(String email);
+    InternDto getIntern(int userId);
 }

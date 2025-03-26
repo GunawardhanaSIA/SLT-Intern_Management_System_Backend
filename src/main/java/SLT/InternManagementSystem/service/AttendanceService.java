@@ -8,7 +8,9 @@ import java.util.List;
 
 @Service
 public interface AttendanceService {
-    AttendanceDto saveAttendance(int internId, int projectId, String date, Boolean status);
+    AttendanceDto saveAttendance(int internId, String date);
 
-    List<AttendanceDto> getAttendanceByProjectId(int projectId);
+    List<AttendanceDto> getInternAttendance(int internId);
+
+//    List<AttendanceDto> getAttendanceByProjectId(int projectId);
 }

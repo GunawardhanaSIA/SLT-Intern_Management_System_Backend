@@ -60,8 +60,11 @@ public class InternServiceImpl implements InternService {
     }
 
     @Override
-    public InternDto getIntern(String email) {
-        Intern intern = internRepository.findInternByEmail(email);
+    public InternDto getIntern(int userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        Intern intern = internRepository.findInternByUser(user);
         if (intern != null) {
             return InternMapper.mapToInternDto(intern);
         }
