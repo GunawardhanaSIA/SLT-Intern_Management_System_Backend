@@ -21,6 +21,7 @@ public class ApplicantMapper {
                 applicant.getProgrammingLanguages(),
                 applicant.getResumeURL(),
                 applicant.getState(),
+                applicant.getInternState(),
                 applicant.getInterviewDate(),
                 applicant.getInterviewTime()
         );
@@ -43,6 +44,7 @@ public class ApplicantMapper {
                 applicantDto.getProgrammingLanguages(),
                 applicantDto.getResumeURL(),
                 applicantDto.getState(),
+                applicantDto.getInternState(),
                 applicantDto.getInterviewDate(),
                 applicantDto.getInterviewTime()
         );
