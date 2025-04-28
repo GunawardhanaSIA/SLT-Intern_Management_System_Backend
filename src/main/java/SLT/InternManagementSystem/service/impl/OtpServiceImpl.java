@@ -37,7 +37,7 @@ public class OtpServiceImpl implements OtpService {
 
         User user = userRepository.findByUsername(email)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + email));
-        user.setState(0);
+//        user.setState(0);
         User updatedUser = userRepository.save(user);
 
         if (otpToVerify != null) {

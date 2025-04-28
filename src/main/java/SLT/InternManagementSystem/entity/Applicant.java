@@ -31,6 +31,8 @@ public class Applicant {
 
     @Column(columnDefinition = "INT DEFAULT 0")
     private int state;
+    @Column(columnDefinition = "INT DEFAULT 0")
+    private int internState;
     private String interviewDate;
     private String interviewTime;
 
@@ -58,6 +60,7 @@ public class Applicant {
     public String getProgrammingLanguages() { return programmingLanguages; }
     public String getResumeURL() { return resumeURL; }
     public int getState() { return state; }
+    public int getInternState() { return internState; }
     public String getInterviewDate() { return interviewDate; }
     public String getInterviewTime() { return interviewTime; }
 
@@ -80,6 +83,7 @@ public class Applicant {
     public void setProgrammingLanguages(String programmingLanguages) { this.programmingLanguages = programmingLanguages; }
     public void setResumeURL(String resumeURL) { this.resumeURL = resumeURL; }
     public void setState(int state) { this.state = state; }
+    public void setInternState(int internState) { this.internState = internState; }
     public void setInterviewDate(String interviewDate) { this.interviewDate = interviewDate; }
     public void setInterviewTime(String interviewTime) { this.interviewTime = interviewTime; }
 
@@ -101,6 +105,7 @@ public class Applicant {
                         String programmingLanguages,
                         String resumeURL,
                         int state,
+                        int internState,
                         String interviewDate,
                         String interviewTime) {
         this.applicantId = applicantId;
@@ -118,6 +123,7 @@ public class Applicant {
         this.programmingLanguages = programmingLanguages;
         this.resumeURL = resumeURL;
         this.state = state;
+        this.internState = internState;
         this.interviewDate = interviewDate;
         this.interviewTime = interviewTime;
     }

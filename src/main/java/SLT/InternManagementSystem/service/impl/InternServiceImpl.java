@@ -45,6 +45,8 @@ public class InternServiceImpl implements InternService {
         Supervisor supervisor = supervisorRepository.findBySupervisorId(supervisorId)
                 .orElseThrow(() -> new RuntimeException("Supervisor not found"));
 
+        applicant.setInternState(1);
+        applicantRepository.save(applicant);
         Intern intern = InternMapper.mapToIntern(internDto);
         intern.setUser(user);
         intern.setApplicant(applicant);

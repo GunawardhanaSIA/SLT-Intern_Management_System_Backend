@@ -8,7 +8,7 @@ import SLT.InternManagementSystem.entity.User;
 import SLT.InternManagementSystem.service.AuthenticationService;
 import SLT.InternManagementSystem.service.OtpService;
 import SLT.InternManagementSystem.service.UserService;
-import SLT.InternManagementSystem.service.impl.UserDetailsServiceImpl;
+//import SLT.InternManagementSystem.service.impl.UserDetailsServiceImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,26 +20,28 @@ import java.util.Map;
 public class AuthenticationController {
     private final AuthenticationService authService;
     private final OtpService otpService;
-    private final UserDetailsServiceImpl userDetailsServiceImpl;
+//    private final UserDetailsServiceImpl userDetailsServiceImpl;
     private final UserService userService;
 
-    public AuthenticationController(AuthenticationService authService, OtpService otpService, UserDetailsServiceImpl userDetailsServiceImpl, UserService userService) {
+    public AuthenticationController(AuthenticationService authService, OtpService otpService, UserService userService) {
 
         this.authService = authService;
         this.otpService = otpService;
-        this.userDetailsServiceImpl = userDetailsServiceImpl;
+//        this.userDetailsServiceImpl = userDetailsServiceImpl;
         this.userService = userService;
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<AuthenticationResponse> register(@RequestBody User request) {
+    public ResponseEntity<AuthenticationResponse> register(@RequestBody UserDto request) {
+        System.out.println("user request: " + request);
         return ResponseEntity.ok(authService.register(request));
     }
 
     @PostMapping("/login")
-    public ResponseEntity<AuthenticationResponse> login(@RequestBody User request) {
-        System.out.println("Received login request: Email = " + request.getUsername() + ", Password = " + request.getPassword());
-        return ResponseEntity.ok(authService.authenticate(request));
+    public ResponseEntity<AuthenticationResponse> login(@RequestBody UserDto userDto) {
+        System.out.println("Received login request: Email = " + userDto.getUsername());
+//        UserDto loggedInUser = authService.authenticate(userDto);
+        return ResponseEntity.ok(authService.authenticate(userDto));
     }
 
     @PostMapping("/storeOTP")

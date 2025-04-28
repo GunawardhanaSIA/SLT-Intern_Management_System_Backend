@@ -10,9 +10,9 @@ public class UserMapper {
         return new UserDto(
                 user.getId(),
                 user.getUsername(),
-                user.getPassword(),
-                user.getRole(),
-                user.getState()
+//                user.getPassword(),
+                user.getRole()
+//                user.getState()
         );
     }
 
@@ -20,9 +20,9 @@ public class UserMapper {
         return new User(
                 userDto.getId(),
                 userDto.getUsername(),
-                userDto.getPassword(),
-                userDto.getRole(),
-                userDto.getState()
+//                userDto.getPassword(),
+                userDto.getRole()
+//                userDto.getState()
         );
     }
 }
