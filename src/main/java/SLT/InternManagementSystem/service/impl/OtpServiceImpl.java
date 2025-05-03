@@ -35,7 +35,7 @@ public class OtpServiceImpl implements OtpService {
     public boolean validateOtp(String email, int otp) {
         Otp otpToVerify = otpRepository.findTopByEmailOrderByCreatedAtDesc(email);
 
-        User user = userRepository.findByUsername(email)
+        User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + email));
 //        user.setState(0);
         User updatedUser = userRepository.save(user);

@@ -15,25 +15,28 @@ public class VerificationToken {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String token;
-    private LocalDateTime expirationTime;
-    private String newEmail;
+    private LocalDateTime expiryDate;
 
     @OneToOne
-    @JoinColumn(name = "userId", referencedColumnName = "id", nullable = false)
     private User user;
 
     public Long getId() {return id;}
     public String getToken() {return token;}
-    public LocalDateTime getExpirationTime() {return expirationTime;}
-    public String getNewEmail() {return newEmail;}
+    public LocalDateTime getExpiryDate() {return expiryDate;}
     public User getUser() {return user;}
 
-    public VerificationToken(Long id, String token, LocalDateTime expirationTime, String newEmail, User user) {
+    public void setId(Long id) {this.id = id;}
+    public void setToken(String token) {this.token = token;}
+    public void setExpiryDate(LocalDateTime expiryDate) {this.expiryDate = expiryDate;}
+    public void setUser(User user) {this.user = user;}
+
+    public VerificationToken(Long id, String token, LocalDateTime expiryDate, User user) {
         this.id = id;
         this.token = token;
-        this.expirationTime = expirationTime;
-        this.newEmail = newEmail;
+        this.expiryDate = expiryDate;
         this.user = user;
     }
+
+    public VerificationToken() {}
 
 }

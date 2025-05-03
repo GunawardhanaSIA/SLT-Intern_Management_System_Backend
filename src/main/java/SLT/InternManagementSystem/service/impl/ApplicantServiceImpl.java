@@ -36,7 +36,7 @@ public class ApplicantServiceImpl implements ApplicantService {
         String username = authentication.getName();
         System.out.println(username);
 
-        Optional<User> userOptional = userRepository.findByUsername(username);
+        Optional<User> userOptional = userRepository.findByEmail(username);
         if (userOptional.isEmpty()) {
             throw new RuntimeException("User not found");
         }
