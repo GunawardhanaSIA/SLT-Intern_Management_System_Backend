@@ -21,11 +21,11 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-//    private final UserDetailsServiceImpl userDetailsService;
+    private final UserDetailsServiceImpl userDetailsService;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
-    public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter) {
-//        this.userDetailsService = userDetailsService;
+    public SecurityConfig(UserDetailsServiceImpl userDetailsService, JwtAuthenticationFilter jwtAuthenticationFilter) {
+        this.userDetailsService = userDetailsService;
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
     }
 
@@ -33,13 +33,13 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
-//                .authorizeHttpRequests(
-//                      req -> req.requestMatchers("/login/**", "/signup", "/storeOTP", "/verifyOTP", "/admin/**", "/intern/**").permitAll()
-//                              .requestMatchers("/admin/**").hasAuthority("Admin")
-//                              .requestMatchers("/intern/**").hasAuthority("Intern")
-//                              .requestMatchers("/supervisor/**").hasAuthority("Supervisor")
-//                              .anyRequest().authenticated()
-//                ).userDetailsService(userDetailsService)
+                .authorizeHttpRequests(
+                      req -> req.requestMatchers("/login/**", "/signup/manual", "/verify", "/signup/google").permitAll()
+                              .requestMatchers("/admin/**").hasAuthority("Admin")
+                              .requestMatchers("/intern/**").hasAuthority("Intern")
+                              .requestMatchers("/supervisor/**").hasAuthority("Supervisor")
+                              .anyRequest().authenticated()
+                ).userDetailsService(userDetailsService)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();

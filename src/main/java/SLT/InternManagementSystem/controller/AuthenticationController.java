@@ -5,42 +5,59 @@ import SLT.InternManagementSystem.dto.OtpDto;
 import SLT.InternManagementSystem.dto.UserDto;
 import SLT.InternManagementSystem.entity.AuthenticationResponse;
 import SLT.InternManagementSystem.entity.User;
+import SLT.InternManagementSystem.entity.VerificationToken;
 import SLT.InternManagementSystem.service.AuthenticationService;
 import SLT.InternManagementSystem.service.OtpService;
 import SLT.InternManagementSystem.service.UserService;
 //import SLT.InternManagementSystem.service.impl.UserDetailsServiceImpl;
+import SLT.InternManagementSystem.service.impl.UserDetailsServiceImpl;
+import jakarta.mail.MessagingException;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.Map;
+import java.util.Optional;
 
 @CrossOrigin("*")
 @RestController
 public class AuthenticationController {
     private final AuthenticationService authService;
     private final OtpService otpService;
-//    private final UserDetailsServiceImpl userDetailsServiceImpl;
+    private final UserDetailsServiceImpl userDetailsServiceImpl;
     private final UserService userService;
 
-    public AuthenticationController(AuthenticationService authService, OtpService otpService, UserService userService) {
+    public AuthenticationController(AuthenticationService authService, OtpService otpService, UserDetailsServiceImpl userDetailsServiceImpl,UserService userService) {
 
         this.authService = authService;
         this.otpService = otpService;
-//        this.userDetailsServiceImpl = userDetailsServiceImpl;
+        this.userDetailsServiceImpl = userDetailsServiceImpl;
         this.userService = userService;
     }
 
-    @PostMapping("/signup")
-    public ResponseEntity<AuthenticationResponse> register(@RequestBody UserDto request) {
+    @PostMapping("/signup/manual")
+    public ResponseEntity<AuthenticationResponse> register(@RequestBody UserDto request) throws MessagingException {
         System.out.println("user request: " + request);
-        return ResponseEntity.ok(authService.register(request));
+        return ResponseEntity.ok(authService.ManualRegister(request));
+    }
+
+    @GetMapping("verify")
+    public void verifyAccount(@RequestParam("token") String token, HttpServletResponse response) throws IOException {
+        authService.VerifyToken(token, response);
+    }
+
+    @PostMapping("/signup/google")
+    public ResponseEntity<?> googleLogin(@RequestBody Map<String, String> payload) {
+        String token = payload.get("token");
+        return ResponseEntity.ok(authService.GoogleRegister(token));
     }
 
     @PostMapping("/login")
     public ResponseEntity<AuthenticationResponse> login(@RequestBody UserDto userDto) {
-        System.out.println("Received login request: Email = " + userDto.getUsername());
-//        UserDto loggedInUser = authService.authenticate(userDto);
+        System.out.println("Received login request: Email = " + userDto.getEmail());
+        System.out.println("Received login request: Password = " + userDto.getPassword());
         return ResponseEntity.ok(authService.authenticate(userDto));
     }
 

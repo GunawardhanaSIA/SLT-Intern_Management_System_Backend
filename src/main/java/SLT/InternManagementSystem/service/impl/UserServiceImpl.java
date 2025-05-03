@@ -27,7 +27,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean validateEmail(String username) {
         System.out.println("Inside validateEmail" + username);
-        Optional<User> user = userRepository.findByUsername(username);
+        Optional<User> user = userRepository.findByEmail(username);
         if (user.isEmpty()) {
 //            System.out.println("User not found: " + username);
             return false;
@@ -37,7 +37,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto resetPassword(String username, String password) {
-        User user = userRepository.findByUsername(username)
+        User user = userRepository.findByEmail(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + username));
 
 //        user.setPassword(passwordEncoder.encode(password));

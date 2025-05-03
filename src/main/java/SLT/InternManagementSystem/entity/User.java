@@ -20,14 +20,16 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    private String username;
-//    private String password;
+    private String email;
+    private String password;
 
     @Enumerated(EnumType.STRING)
     private Role role;
 
-//    @Column(columnDefinition = "INT DEFAULT 0")
-//    private int state;
+    @Enumerated(EnumType.STRING)
+    private AuthProvider authProvider;
+
+    private boolean emailVerified = false;
 
 
 //    @Override
@@ -38,45 +40,34 @@ public class User {
     public int getId() {
         return id;
     }
-
-//    public String getPassword() {
-//        return password;
-//    }
-
-    public String getUsername() {
-        return username;
-    }
-
+    public String getEmail() { return email; }
+    public String getPassword() { return password; }
     public Role getRole() {
         return role;
     }
-
-//    public int getState() { return state; }
+    public AuthProvider getAuthProvider() { return authProvider; }
+    public boolean isEmailVerified() { return emailVerified; }
 
     public void setId(int id) {
         this.id = id;
     }
-
-    public void setUsername(String username) {
-        this.username = username;
+    public void setEmail(String email) {
+        this.email = email;
     }
-
-//    public void setPassword(String password) {
-//        this.password = password;
-//    }
-
+    public void setPassword(String password) { this.password = password; }
     public void setRole(Role role) {
         this.role = role;
     }
+    public void setAuthProvider(AuthProvider authProvider) { this.authProvider = authProvider; }
+    public void setEmailVerified(boolean emailVerified) { this.emailVerified = emailVerified; }
 
-//    public void setState(int state) { this.state = state; }
-
-    public User(int id, String username, Role role) {
+    public User(int id, String email, String password, Role role, AuthProvider authProvider, boolean emailVerified) {
         this.id = id;
-        this.username = username;
-//        this.password = password;
+        this.email = email;
+        this.password = password;
         this.role = role;
-//        this.state = state;
+        this.authProvider = authProvider;
+        this.emailVerified = emailVerified;
     }
 
     public User() {}

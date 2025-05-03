@@ -17,8 +17,7 @@ public class VerificationTokenMapper {
         return new VerificationTokenDto(
                 token.getId(),
                 token.getToken(),
-                token.getExpirationTime(),
-                token.getNewEmail(),
+                token.getExpiryDate(),
                 token.getUser()
         );
     }
@@ -27,8 +26,7 @@ public class VerificationTokenMapper {
         return new VerificationToken(
                 tokenDto.getId(),
                 tokenDto.getToken(),
-                tokenDto.getExpirationTime(),
-                tokenDto.getNewEmail(),
+                tokenDto.getExpiryDate(),
                 tokenDto.getUser()
         );
     }
