@@ -188,7 +188,10 @@ public class AuthenticationService {
         user.setEmail(email);
         user.setEmailVerified(true);
         user.setAuthProvider(AuthProvider.Google);
-        user.setRole(Role.Intern);
+
+        if (!optionalUser.isPresent()) {
+            user.setRole(Role.Intern);
+        }
 
         return userRepository.save(user);
     }
