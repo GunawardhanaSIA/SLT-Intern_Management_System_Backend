@@ -21,7 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@CrossOrigin("*")
+@CrossOrigin("http://localhost:5173")
 @RestController
 @RequestMapping("/intern")
 public class InternController {
@@ -69,6 +69,7 @@ public class InternController {
         ApplicantDto savedApplicant = applicantService.createApplicant(applicantDto);
         return new ResponseEntity<>(savedApplicant, HttpStatus.CREATED);
     }
+
 
     @GetMapping("/getIntern/{userId}")
     public ResponseEntity<?> getIntern(@PathVariable int userId) {
