@@ -27,6 +27,7 @@ public class ApplicantDto {
     private String specialization;
     private String programmingLanguages;
     private String resumeURL;
+    private String resumeText;
     private int state;
     private int internState;
     private String interviewDate;
@@ -56,6 +57,7 @@ public class ApplicantDto {
     public String getSpecialization() { return specialization; }
     public String getProgrammingLanguages() { return programmingLanguages; }
     public String getResumeURL() { return resumeURL; }
+    public String getResumeText() { return resumeText; }
     public int getState() { return state; }
     public int getInternState() { return internState; }
     public String getInterviewDate() { return interviewDate; }
@@ -78,6 +80,7 @@ public class ApplicantDto {
     public void setSpecialization(String specialization) { this.specialization = specialization; }
     public void setProgrammingLanguages(String programmingLanguages) { this.programmingLanguages = programmingLanguages; }
     public void setResumeURL(String resumeURL) { this.resumeURL = resumeURL; }
+    public void setResumeText(String resumeText) { this.resumeText = resumeText; }
     public void setState(int state) { this.state = state; }
     public void setInternState(int internState) { this.internState = internState; }
     public void setInterviewDate(String interviewDate) { this.interviewDate = interviewDate; }
@@ -97,6 +100,7 @@ public class ApplicantDto {
                         String specialization,
                         String programmingLanguages,
                         String resumeURL,
+                        String resumeText,
                         int state,
                         int internState,
                         String interviewDate,
@@ -115,6 +119,7 @@ public class ApplicantDto {
         this.specialization = specialization;
         this.programmingLanguages = programmingLanguages;
         this.resumeURL = resumeURL;
+        this.resumeText = resumeText;
         this.state = state;
         this.internState = internState;
         this.interviewDate = interviewDate;
