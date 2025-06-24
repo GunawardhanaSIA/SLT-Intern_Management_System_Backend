@@ -1,10 +1,8 @@
 package SLT.InternManagementSystem.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Data
 @Builder
@@ -43,6 +41,10 @@ public class Intern {
     @ManyToOne
     @JoinColumn(name = "supervisor_id", nullable = false)
     private Supervisor supervisor;
+
+    public Intern() {
+
+    }
 
 
     public int getInternId() {
@@ -96,7 +98,7 @@ public class Intern {
     public void setSupervisor(Supervisor supervisor) { this.supervisor = supervisor; }
 
 
-    public Intern() {}
+    public Intern(Integer internId) {}
 
     public Intern(int internId,
                      User user,
