@@ -2,9 +2,11 @@ package SLT.InternManagementSystem.controller;
 
 import SLT.InternManagementSystem.dto.ApplicantDto;
 import SLT.InternManagementSystem.dto.InternDto;
+import SLT.InternManagementSystem.dto.ProjectDto;
 import SLT.InternManagementSystem.dto.SupervisorDto;
 import SLT.InternManagementSystem.service.ApplicantService;
 import SLT.InternManagementSystem.service.InternService;
+import SLT.InternManagementSystem.service.ProjectService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
@@ -27,12 +29,14 @@ import java.util.Map;
 public class InternController {
     private final InternService internService;
     private ApplicantService applicantService;
+    private ProjectService projectService;
     private static final String RESUME_DIR = "C:/Users/Sandani Gunawardhana/OneDrive/Desktop/SLT/Intern Management System/Frontend/public/Resumes";
 
     @Autowired
-    public InternController(ApplicantService applicantService, InternService internService) {
+    public InternController(ApplicantService applicantService, InternService internService, ProjectService projectService) {
         this.applicantService = applicantService;
         this.internService = internService;
+        this.projectService = projectService;
     }
 
     @PostMapping("/apply/resumeUpload")
@@ -74,13 +78,15 @@ public class InternController {
     @GetMapping("/getIntern/{userId}")
     public ResponseEntity<?> getIntern(@PathVariable int userId) {
         InternDto intern = internService.getIntern(userId);
-
         if (intern != null) {
-            return ResponseEntity.ok(intern);
+            List<ProjectDto> projects = projectService.getProjectsByInternId(intern.getInternId());
+            Map<String, Object> response = new HashMap<>();
+            response.put("intern", intern);
+            response.put("projects", projects);
+            return ResponseEntity.ok(response);
         } else {
-            System.out.println("Intern not found");
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("Intern with email " + userId + " not found.");
+                    .body("Intern with userId " + userId + " not found.");
         }
     }
 }
