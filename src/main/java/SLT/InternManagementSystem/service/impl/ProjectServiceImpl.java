@@ -4,6 +4,7 @@ import SLT.InternManagementSystem.dto.ProjectDto;
 import SLT.InternManagementSystem.entity.*;
 import SLT.InternManagementSystem.mapper.ProjectMapper;
 import SLT.InternManagementSystem.repository.ProjectRepository;
+import SLT.InternManagementSystem.repository.InternRepository;
 import SLT.InternManagementSystem.repository.SupervisorRepository;
 import SLT.InternManagementSystem.service.ProjectService;
 import org.springframework.stereotype.Service;
@@ -15,12 +16,13 @@ import java.util.stream.Collectors;
 public class ProjectServiceImpl implements ProjectService {
     private final SupervisorRepository supervisorRepository;
     private final ProjectRepository projectRepository;
+    private final InternRepository internRepository;
 
-    public ProjectServiceImpl(SupervisorRepository supervisorRepository, ProjectRepository projectRepository) {
+    public ProjectServiceImpl(SupervisorRepository supervisorRepository, ProjectRepository projectRepository, InternRepository internRepository) {
         this.supervisorRepository = supervisorRepository;
         this.projectRepository = projectRepository;
+        this.internRepository = internRepository;
     }
-
     @Override
     public ProjectDto createProject(int supervisorId, ProjectDto projectDto) {
         Supervisor supervisor = supervisorRepository.findById(supervisorId)
@@ -43,6 +45,13 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public List<ProjectDto> getAllProjects() {
         List<Project> projects = projectRepository.findAll();
+        return projects.stream().map((project) -> ProjectMapper.mapToProjectDto(project)).collect(Collectors.toList());
+    }
+
+    public List<ProjectDto> getProjectsByInternId(int internId) {
+        Intern intern = internRepository.findByInternId(internId)
+                .orElseThrow(() -> new RuntimeException("Intern not found"));
+        List<Project> projects = projectRepository.findByInternsContaining(intern);
         return projects.stream().map((project) -> ProjectMapper.mapToProjectDto(project)).collect(Collectors.toList());
     }
 }
