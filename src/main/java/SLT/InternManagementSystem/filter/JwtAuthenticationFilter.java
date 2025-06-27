@@ -28,13 +28,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+            throws ServletException, IOException {
         String path = request.getServletPath();
         if (path.equals("/login") || path.equals("/signup")) {
             filterChain.doFilter(request, response);
             return;
         }
-
 
         final String authorizationHeader = request.getHeader("Authorization");
         final String jwt;
@@ -47,21 +47,40 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         jwt = authorizationHeader.substring(7);
         username = jwtService.extractEmail(jwt);
+        System.out.println("=== JWT Authentication Debug ===");
         System.out.println("JWT Token: " + jwt);
         System.out.println("Extracted Email: " + username);
+        System.out.println("Request URL: " + request.getRequestURL());
+        System.out.println("Request Method: " + request.getMethod());
 
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             var userDetails = this.userDetailsService.loadUserByUsername(username);
+            System.out.println("User found: " + userDetails.getUsername());
 
             if (jwtService.isValid(jwt, userDetails)) {
                 String role = jwtService.extractClaim(jwt, claims -> claims.get("role", String.class));
-                System.out.println("Extracted Role: " + role);
+                System.out.println("Extracted Role from JWT: '" + role + "'");
+
+                // Check all claims in the token for debugging
+                var allClaims = jwtService.extractAllClaims(jwt);
+                System.out.println("All JWT Claims: " + allClaims);
+
                 List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority(role));
-                UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userDetails, null, authorities);
+                System.out.println("Granted Authorities: " + authorities);
+
+                UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userDetails,
+                        null, authorities);
                 authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authToken);
+
+                System.out.println("Authentication successful for user: " + username + " with role: " + role);
+            } else {
+                System.out.println("JWT token validation failed for user: " + username);
             }
+        } else {
+            System.out.println("No username extracted or authentication already exists");
         }
+        System.out.println("=== End JWT Debug ===");
         filterChain.doFilter(request, response);
     }
 }
