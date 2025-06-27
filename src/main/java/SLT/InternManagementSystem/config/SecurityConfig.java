@@ -36,17 +36,20 @@ public class SecurityConfig {
                 .cors(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(
-                      req -> req.requestMatchers("/login/**", "/signup/manual", "/verify", "/signup/google").permitAll()
-                              .requestMatchers("/admin/**").hasAuthority("Admin")
-                              .requestMatchers("/intern/**").hasAuthority("Intern")
-                              .requestMatchers("/supervisor/**").hasAuthority("Supervisor")
-                              .anyRequest().authenticated()
-                ).userDetailsService(userDetailsService)
+                        req -> req
+                                .requestMatchers("/login/**", "/signup/manual", "/verify", "/signup/google",
+                                        "/api/debug/**")
+                                .permitAll()
+                                .requestMatchers("/admin/**").hasAuthority("Admin")
+                                .requestMatchers("/intern/**").hasAuthority("Intern")
+                                .requestMatchers("/api/work-records/**").hasAuthority("Intern")
+                                .requestMatchers("/supervisor/**").hasAuthority("Supervisor")
+                                .anyRequest().authenticated())
+                .userDetailsService(userDetailsService)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
-
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -58,18 +61,21 @@ public class SecurityConfig {
         return configuration.getAuthenticationManager();
     }
 
-
-//    @Bean
-//    public CorsConfigurationSource corsConfigurationSource() {
-//        CorsConfiguration configuration = new CorsConfiguration();
-//        configuration.addAllowedOrigin("*"); // Allow all origins or set specific ones
-//        configuration.addAllowedMethod("*"); // Allow all HTTP methods (GET, POST, etc.)
-//        configuration.addAllowedHeader("*"); // Allow all headers
-//
-//        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-//        source.registerCorsConfiguration("/**", configuration); // Apply to all endpoints
-//
-//        return source;
-//    }
+    // @Bean
+    // public CorsConfigurationSource corsConfigurationSource() {
+    // CorsConfiguration configuration = new CorsConfiguration();
+    // configuration.addAllowedOrigin("*"); // Allow all origins or set specific
+    // ones
+    // configuration.addAllowedMethod("*"); // Allow all HTTP methods (GET, POST,
+    // etc.)
+    // configuration.addAllowedHeader("*"); // Allow all headers
+    //
+    // UrlBasedCorsConfigurationSource source = new
+    // UrlBasedCorsConfigurationSource();
+    // source.registerCorsConfiguration("/**", configuration); // Apply to all
+    // endpoints
+    //
+    // return source;
+    // }
 
 }
