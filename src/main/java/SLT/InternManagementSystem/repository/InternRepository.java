@@ -5,6 +5,7 @@ import SLT.InternManagementSystem.entity.Supervisor;
 import SLT.InternManagementSystem.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface InternRepository extends JpaRepository<Intern, Integer> {
@@ -15,4 +16,6 @@ public interface InternRepository extends JpaRepository<Intern, Integer> {
     Intern findInternByEmail(String email);
 
     Intern findInternByUser(User user);
+
+    List<Intern> findBySupervisor(Supervisor supervisor);
 }

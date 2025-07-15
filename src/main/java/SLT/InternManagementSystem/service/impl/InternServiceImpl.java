@@ -27,9 +27,9 @@ public class InternServiceImpl implements InternService {
     private final ApplicantRepository applicantRepository;
     private final SupervisorRepository supervisorRepository;
 
-
     @Autowired
-    public InternServiceImpl(InternRepository internRepository, UserRepository userRepository, ApplicantRepository applicantRepository, SupervisorRepository supervisorRepository) {
+    public InternServiceImpl(InternRepository internRepository, UserRepository userRepository,
+                             ApplicantRepository applicantRepository, SupervisorRepository supervisorRepository) {
         this.internRepository = internRepository;
         this.userRepository = userRepository;
         this.applicantRepository = applicantRepository;
@@ -71,5 +71,58 @@ public class InternServiceImpl implements InternService {
             return InternMapper.mapToInternDto(intern);
         }
         return null;
+    }
+
+    @Override
+    public InternDto getInternById(int internId) {
+        Intern intern = internRepository.findById(internId)
+                .orElseThrow(() -> new RuntimeException("Intern not found with id: " + internId));
+        return InternMapper.mapToInternDto(intern);
+    }
+
+    @Override
+    public InternDto updateIntern(int internId, InternDto internDto) {
+        Intern intern = internRepository.findById(internId)
+                .orElseThrow(() -> new RuntimeException("Intern not found with id: " + internId));
+
+        // Update intern fields
+        intern.setName(internDto.getName());
+        intern.setNic(internDto.getNic());
+        intern.setMobileNumber(internDto.getMobileNumber());
+        intern.setEmail(internDto.getEmail());
+        intern.setAddress(internDto.getAddress());
+        intern.setEducationalInstitute(internDto.getEducationalInstitute());
+        intern.setDegree(internDto.getDegree());
+        intern.setAcademicYear(internDto.getAcademicYear());
+        intern.setInternshipPeriod(internDto.getInternshipPeriod());
+        intern.setSpecialization(internDto.getSpecialization());
+        intern.setProgrammingLanguages(internDto.getProgrammingLanguages());
+        intern.setStartDate(internDto.getStartDate());
+
+        // Update supervisor if provided
+        if (internDto.getSupervisorId() != null) {
+            Supervisor supervisor = supervisorRepository.findBySupervisorId(internDto.getSupervisorId())
+                    .orElseThrow(() -> new RuntimeException("Supervisor not found"));
+            intern.setSupervisor(supervisor);
+        }
+
+        Intern updatedIntern = internRepository.save(intern);
+        return InternMapper.mapToInternDto(updatedIntern);
+    }
+
+    @Override
+    public void deleteIntern(int internId) {
+        Intern intern = internRepository.findById(internId)
+                .orElseThrow(() -> new RuntimeException("Intern not found with id: " + internId));
+        internRepository.delete(intern);
+    }
+
+    @Override
+    public InternDto updateInternStatus(int internId, int status) {
+        Intern intern = internRepository.findById(internId)
+                .orElseThrow(() -> new RuntimeException("Intern not found with id: " + internId));
+        intern.setState(status);
+        Intern updatedIntern = internRepository.save(intern);
+        return InternMapper.mapToInternDto(updatedIntern);
     }
 }

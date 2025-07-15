@@ -45,8 +45,7 @@ public class AttendanceServiceImpl implements AttendanceService {
 
     @Override
     public List<AttendanceDto> getInternAttendance(int internId) {
-        Intern intern = internRepository.findByInternId(internId)
-                .orElseThrow(() -> new RuntimeException("Intern not found"));
+        Intern intern = internRepository.findByInternId(internId).orElseThrow(() -> new RuntimeException("Intern not found"));
 
         List<Attendance> attendances = attendanceRepository.findByIntern(intern);
         return attendances.stream().map((attendance) -> AttendanceMapper.mapToAttendanceDto(attendance)).collect(Collectors.toList());

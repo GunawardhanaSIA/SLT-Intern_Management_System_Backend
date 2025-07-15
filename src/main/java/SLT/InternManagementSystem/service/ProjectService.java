@@ -10,4 +10,5 @@ import java.util.List;
 public interface ProjectService {
     ProjectDto createProject(int supervisorId, ProjectDto projectDto);
     List<ProjectDto> getAllProjects();
+    List<ProjectDto> getProjectsByInternId(int internId);
 }

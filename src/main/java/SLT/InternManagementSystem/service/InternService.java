@@ -13,4 +13,12 @@ public interface InternService {
     List<InternDto> getAllInterns();
 
     InternDto getIntern(int userId);
+
+    InternDto getInternById(int internId);
+
+    InternDto updateIntern(int internId, InternDto internDto);
+
+    void deleteIntern(int internId);
+
+    InternDto updateInternStatus(int internId, int status);
 }
