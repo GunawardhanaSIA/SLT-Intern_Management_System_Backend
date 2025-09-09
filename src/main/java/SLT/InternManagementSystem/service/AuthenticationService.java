@@ -2,24 +2,22 @@ package SLT.InternManagementSystem.service;
 
 import SLT.InternManagementSystem.dto.UserDto;
 import SLT.InternManagementSystem.entity.*;
-import SLT.InternManagementSystem.mapper.UserMapper;
 import SLT.InternManagementSystem.repository.UserRepository;
 import SLT.InternManagementSystem.repository.VerificationRepository;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
 import com.google.api.client.http.javanet.NetHttpTransport;
-import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.client.json.gson.GsonFactory;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.mail.javamail.JavaMailSender;
 
@@ -39,15 +37,17 @@ public class AuthenticationService {
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
+    private final Environment environment;
 
     private final String CLIENT_ID = "96778155456-3ji09r49k7im0kid1end8k161ho4ic9o.apps.googleusercontent.com";
 
-    public AuthenticationService(UserRepository userRepository, VerificationRepository verificationRepository, PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager, JwtService jwtService) {
+    public AuthenticationService(UserRepository userRepository, VerificationRepository verificationRepository, PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager, JwtService jwtService, Environment environment) {
         this.userRepository = userRepository;
         this.verificationRepository = verificationRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtService = jwtService;
         this.authenticationManager = authenticationManager;
+        this.environment = environment;
     }
 
 //    public AuthenticationResponse register(UserDto request) {
@@ -85,7 +85,7 @@ public class AuthenticationService {
 
         user = userRepository.save(user);
 
-        String verificationTokenStr = UUID.randomUUID().toString();
+    String verificationTokenStr = UUID.randomUUID().toString();
 
         VerificationToken verificationToken = new VerificationToken();
         verificationToken.setToken(verificationTokenStr);
@@ -97,6 +97,31 @@ public class AuthenticationService {
         SendVerificationEmail(user.getEmail(), verificationTokenStr);
 
         String token = jwtService.generateToken(user);
+
+        String verificationUrl = "http://localhost:8080/verify?token=" + verificationTokenStr;
+
+        // Include verification URL in response for local/dev testing or when Mailtrap is used
+        boolean includeUrlInResponse = false;
+        try {
+            String[] activeProfiles = environment.getActiveProfiles();
+            for (String p : activeProfiles) {
+                if (p.equalsIgnoreCase("dev")) {
+                    includeUrlInResponse = true;
+                    break;
+                }
+            }
+
+            String mailHost = environment.getProperty("spring.mail.host", "");
+            if (!includeUrlInResponse && mailHost.toLowerCase().contains("mailtrap")) {
+                includeUrlInResponse = true;
+            }
+        } catch (Exception ignored) {
+        }
+
+        if (includeUrlInResponse) {
+            return new AuthenticationResponse(token, verificationUrl);
+        }
+
         return new AuthenticationResponse(token);
     }
 
@@ -109,7 +134,12 @@ public class AuthenticationService {
         MimeMessageHelper helper = new MimeMessageHelper(message, true);
 
         helper.setTo(email);
+        // Set a sensible From address to ensure SMTP servers accept the message
+        helper.setFrom("no-reply@internmanagementsystem.local");
+        helper.setReplyTo("no-reply@internmanagementsystem.local");
         helper.setSubject("Complete Registration!");
+        System.out.println("[Email] Sending verification email to: " + email);
+        System.out.println("[Email] Verification URL: " + verificationUrl);
         helper.setText(
                 "<html>" +
                         "<body>" +
@@ -120,7 +150,15 @@ public class AuthenticationService {
                 true
         );
 
-        mailSender.send(message);
+        try {
+            mailSender.send(message);
+            System.out.println("[Email] Verification email sent successfully to: " + email);
+        } catch (Exception e) {
+            System.err.println("[Email] Failed to send verification email to: " + email);
+            e.printStackTrace();
+            // Wrap into MessagingException to preserve method contract
+            throw new MessagingException("Failed to send verification email: " + e.getMessage(), e);
+        }
     }
 
 
@@ -165,8 +203,8 @@ public class AuthenticationService {
 
     public GoogleIdToken.Payload verifyGoogleToken(String tokenString) {
         try {
-            GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(
-                    new NetHttpTransport(), JacksonFactory.getDefaultInstance())
+        GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(
+            new NetHttpTransport(), GsonFactory.getDefaultInstance())
                 .setAudience(Collections.singletonList(CLIENT_ID))
                 .build();
 
