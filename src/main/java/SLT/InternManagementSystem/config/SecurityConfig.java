@@ -35,16 +35,17 @@ public class SecurityConfig {
         return http
                 .cors(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(
-                        req -> req
-                                .requestMatchers("/login/**", "/signup/manual", "/verify", "/signup/google",
-                                        "/api/debug/**")
-                                .permitAll()
-                                .requestMatchers("/admin/**").hasAuthority("Admin")
-                                .requestMatchers("/intern/**").hasAuthority("Intern")
-                                .requestMatchers("/api/work-records/**").hasAuthority("Intern")
-                                .requestMatchers("/supervisor/**").hasAuthority("Supervisor")
-                                .anyRequest().authenticated())
+        .authorizeHttpRequests(req -> req
+            .requestMatchers("/login/**", "/signup/manual", "/verify", "/signup/google", "/api/debug/**")
+            .permitAll()
+            // Using hasRole(...) because UserDetailsServiceImpl assigns roles via .roles(),
+            // which automatically prefixes authorities with "ROLE_" (e.g. ROLE_Intern).
+            // Previous hasAuthority("Intern") checks failed, causing 403.
+            .requestMatchers("/admin/**").hasRole("Admin")
+            .requestMatchers("/intern/**").hasRole("Intern")
+            .requestMatchers("/api/work-records/**").hasRole("Intern")
+            .requestMatchers("/supervisor/**").hasRole("Supervisor")
+            .anyRequest().authenticated())
                 .userDetailsService(userDetailsService)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
