@@ -1,16 +1,11 @@
 package SLT.InternManagementSystem.controller;
 
-import SLT.InternManagementSystem.dto.ApplicantDto;
 import SLT.InternManagementSystem.dto.OtpDto;
 import SLT.InternManagementSystem.dto.UserDto;
 import SLT.InternManagementSystem.entity.AuthenticationResponse;
-import SLT.InternManagementSystem.entity.User;
-import SLT.InternManagementSystem.entity.VerificationToken;
 import SLT.InternManagementSystem.service.AuthenticationService;
 import SLT.InternManagementSystem.service.OtpService;
 import SLT.InternManagementSystem.service.UserService;
-//import SLT.InternManagementSystem.service.impl.UserDetailsServiceImpl;
-import SLT.InternManagementSystem.service.impl.UserDetailsServiceImpl;
 import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpStatus;
@@ -19,21 +14,17 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.util.Map;
-import java.util.Optional;
 
 @CrossOrigin("http://localhost:5173")
 @RestController
 public class AuthenticationController {
     private final AuthenticationService authService;
     private final OtpService otpService;
-    private final UserDetailsServiceImpl userDetailsServiceImpl;
     private final UserService userService;
 
-    public AuthenticationController(AuthenticationService authService, OtpService otpService, UserDetailsServiceImpl userDetailsServiceImpl,UserService userService) {
-
+    public AuthenticationController(AuthenticationService authService, OtpService otpService, UserService userService) {
         this.authService = authService;
         this.otpService = otpService;
-        this.userDetailsServiceImpl = userDetailsServiceImpl;
         this.userService = userService;
     }
 
