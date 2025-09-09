@@ -30,8 +30,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
-        String path = request.getServletPath();
-        if (path.equals("/login") || path.equals("/signup")) {
+    String path = request.getServletPath();
+    // Allow unauthenticated access to auth endpoints
+    if (path.equals("/login") || path.equals("/signup") || path.equals("/signup/manual") || path.equals("/signup/google") || path.equals("/verify") || path.equals("/storeOTP") || path.equals("/verifyOTP") || path.equals("/verifyEmail") || path.equals("/resetPassword")) {
             filterChain.doFilter(request, response);
             return;
         }
