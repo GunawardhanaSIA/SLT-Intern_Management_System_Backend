@@ -21,7 +21,7 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.Optional;
 
-@CrossOrigin("http://localhost:5173")
+@CrossOrigin(origins = {"https://slt-internmanagementsystemfrontend-orcin.vercel.app", "http://localhost:5173", "http://localhost:3000"})
 @RestController
 public class AuthenticationController {
     private final AuthenticationService authService;

@@ -65,7 +65,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 var allClaims = jwtService.extractAllClaims(jwt);
                 System.out.println("All JWT Claims: " + allClaims);
 
-                List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority(role));
+                // Ensure role has ROLE_ prefix for Spring Security
+                String authority = role;
+                if (role != null && !role.startsWith("ROLE_")) {
+                    authority = "ROLE_" + role;
+                }
+
+                List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority(authority));
                 System.out.println("Granted Authorities: " + authorities);
 
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userDetails,
@@ -73,7 +79,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authToken);
 
-                System.out.println("Authentication successful for user: " + username + " with role: " + role);
+                System.out.println("Authentication successful for user: " + username + " with role: " + role + " (authority: " + authority + ")");
             } else {
                 System.out.println("JWT token validation failed for user: " + username);
             }

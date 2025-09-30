@@ -23,7 +23,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@CrossOrigin("http://localhost:5173")
+@CrossOrigin(origins = {"https://slt-internmanagementsystemfrontend-orcin.vercel.app", "http://localhost:5173", "http://localhost:3000"})
 @RestController
 @RequestMapping("/intern")
 public class InternController {

@@ -17,7 +17,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 
-@CrossOrigin("http://localhost:5173")
+@CrossOrigin(origins = {"https://slt-internmanagementsystemfrontend-orcin.vercel.app", "http://localhost:5173", "http://localhost:3000"})
 @RestController
 @RequestMapping("/admin")
 public class AdminController {
