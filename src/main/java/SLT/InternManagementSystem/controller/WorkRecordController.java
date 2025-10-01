@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDate;
 import java.util.List;
 
-@CrossOrigin(origins = {"https://slt-internmanagementsystemfrontend-orcin.vercel.app", "http://localhost:5173", "http://localhost:3000"})
+@CrossOrigin("http://localhost:5173")
 @RestController
 @RequestMapping("/api/work-records")
 @RequiredArgsConstructor
