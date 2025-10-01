@@ -15,9 +15,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.security.web.AuthenticationEntryPoint;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.security.core.AuthenticationException;
 
 @Configuration
 @EnableWebSecurity
@@ -35,17 +36,17 @@ public class SecurityConfig {
         return http
                 .cors(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
-        .authorizeHttpRequests(req -> req
-            .requestMatchers("/login/**", "/signup/manual", "/verify", "/signup/google", "/api/debug/**")
-            .permitAll()
-            // Using hasRole(...) because UserDetailsServiceImpl assigns roles via .roles(),
-            // which automatically prefixes authorities with "ROLE_" (e.g. ROLE_Intern).
-            // Previous hasAuthority("Intern") checks failed, causing 403.
-            .requestMatchers("/admin/**").hasRole("Admin")
-            .requestMatchers("/intern/**").hasRole("Intern")
-            .requestMatchers("/api/work-records/**").hasRole("Intern")
-            .requestMatchers("/supervisor/**").hasRole("Supervisor")
-            .anyRequest().authenticated())
+                .authorizeHttpRequests(
+                        req -> req
+                                .requestMatchers("/login/**", "/signup/manual", "/verify", "/signup/google",
+                                        "/api/debug/**")
+                                .permitAll()
+                                .requestMatchers("/admin/**").hasAuthority("Admin")
+                                .requestMatchers("/intern/**").hasAuthority("Intern")
+                                .requestMatchers("/api/work-records/**").hasAuthority("Intern")
+                                .requestMatchers("/supervisor/**").hasAuthority("Supervisor")
+                                .anyRequest().authenticated())
+
                 .userDetailsService(userDetailsService)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
@@ -60,6 +61,17 @@ public class SecurityConfig {
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
         return configuration.getAuthenticationManager();
+    }
+
+    @Bean
+    public AuthenticationEntryPoint customAuthenticationEntryPoint() {
+        return (HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) -> {
+            response.setContentType("application/json");
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            
+            String jsonResponse = "{\"error\": \"Unauthorized\", \"message\": \"" + authException.getMessage() + "\", \"path\": \"" + request.getRequestURI() + "\"}";
+            response.getWriter().write(jsonResponse);
+        };
     }
 
     // @Bean
